@@ -1,0 +1,30 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /private/
+
+# Googlebot
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /private/
+
+# Bingbot
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /private/
+
+# Host
+Host: https://your-app-name.netlify.app
+
+# Sitemaps
+Sitemap: https://your-app-name.netlify.app/sitemap.xml
+Sitemap: https://your-app-name.netlify.app/server-sitemap.xml

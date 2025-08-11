@@ -1,0 +1,289 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  username        String   @unique
+  password        String
+  name            String?
+  avatar          String?
+  bio             String?
+  location        String?
+  credits         Int      @default(0)
+  subscriptionTier String   @default("free") // free, premium, pro
+  isVerified      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  userSkills      UserSkill[]
+  tradesInitiated Trade[]     @relation("TradesInitiated")
+  tradesReceived  Trade[]     @relation("TradesReceived")
+  coursesCreated  Course[]
+  enrollments     Enrollment[]
+  reviews         Review[]
+  achievements    UserAchievement[]
+  messagesSent    Message[]   @relation("MessagesSent")
+  messagesReceived Message[]  @relation("MessagesReceived")
+  challengeParticipations ChallengeParticipation[]
+  communityMemberships CommunityMember[]
+
+  @@map("users")
+}
+
+model SkillCategory {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String?
+  icon        String?
+  color       String?
+  
+  skills      Skill[]
+  
+  @@map("skill_categories")
+}
+
+model Skill {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  categoryId  String
+  difficulty  Int      @default(1) // 1-5 scale
+  isVerified  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category    SkillCategory @relation(fields: [categoryId], references: [id])
+  userSkills  UserSkill[]
+  courses     Course[]
+  tradeSkills TradeSkill[]
+
+  @@map("skills")
+}
+
+model UserSkill {
+  id           String   @id @default(cuid())
+  userId       String
+  skillId      String
+  proficiency  Int      @default(1) // 1-5 scale
+  type         String   // "offered" or "wanted"
+  description  String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user         User     @relation(fields: [userId], references: [id])
+  skill        Skill    @relation(fields: [skillId], references: [id])
+
+  @@unique([userId, skillId, type])
+  @@map("user_skills")
+}
+
+model Trade {
+  id            String      @id @default(cuid())
+  title         String
+  description   String?
+  status        String      @default("pending") // pending, active, completed, cancelled
+  initiatorId   String
+  receiverId    String
+  scheduledAt   DateTime?
+  completedAt   DateTime?
+  credits       Int         @default(0)
+  rating        Int?
+  review        String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  initiator     User        @relation("TradesInitiated", fields: [initiatorId], references: [id])
+  receiver      User        @relation("TradesReceived", fields: [receiverId], references: [id])
+  tradeSkills   TradeSkill[]
+  messages      Message[]
+  reviews       Review[]    @relation("TradeReviews")
+
+  @@map("trades")
+}
+
+model TradeSkill {
+  id         String @id @default(cuid())
+  tradeId    String
+  skillId    String
+  type       String // "offered" or "requested"
+  duration   Int    // minutes
+
+  trade      Trade  @relation(fields: [tradeId], references: [id])
+  skill      Skill  @relation(fields: [skillId], references: [id])
+
+  @@map("trade_skills")
+}
+
+model Course {
+  id            String   @id @default(cuid())
+  title         String
+  description   String?
+  content       String
+  slides        String?  // JSON array of slide content
+  script        String?  // AI-generated script
+  duration      Int      @default(180) // 3 minutes in seconds
+  difficulty    Int      @default(1)
+  language      String   @default("en")
+  isPublished   Boolean  @default(false)
+  viewCount     Int      @default(0)
+  likeCount     Int      @default(0)
+  creatorId     String
+  skillId       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  creator       User         @relation(fields: [creatorId], references: [id])
+  skill         Skill?       @relation(fields: [skillId], references: [id])
+  enrollments   Enrollment[]
+  reviews       Review[]     @relation("CourseReviews")
+
+  @@map("courses")
+}
+
+model Enrollment {
+  id          String   @id @default(cuid())
+  userId      String
+  courseId    String
+  progress    Float    @default(0)
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+  course      Course   @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  targetId  String
+  targetType String   // "course" or "trade" or "user"
+  rating    Int      // 1-5
+  comment   String?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  course    Course?  @relation("CourseReviews", fields: [targetId], references: [id])
+  trade     Trade?   @relation("TradeReviews", fields: [targetId], references: [id])
+
+  @@map("reviews")
+}
+
+model Achievement {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String
+  icon        String?
+  color       String?
+  points      Int    @default(0)
+
+  userAchievements UserAchievement[]
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+
+  user          User         @relation(fields: [userId], references: [id])
+  achievement   Achievement  @relation(fields: [achievementId], references: [id])
+
+  @@unique([userId, achievementId])
+  @@map("user_achievements")
+}
+
+model Challenge {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  type          String   // "skill_swap", "course_creation", "learning_streak"
+  requirements  String   // JSON
+  reward        Int      // credits
+  startDate     DateTime
+  endDate       DateTime
+  isActive      Boolean  @default(true)
+  participantCount Int   @default(0)
+  createdAt     DateTime @default(now())
+
+  participations ChallengeParticipation[]
+
+  @@map("challenges")
+}
+
+model ChallengeParticipation {
+  id          String   @id @default(cuid())
+  userId      String
+  challengeId String
+  progress    Float    @default(0)
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  user        User      @relation(fields: [userId], references: [id])
+  challenge   Challenge @relation(fields: [challengeId], references: [id])
+
+  @@unique([userId, challengeId])
+  @@map("challenge_participations")
+}
+
+model Community {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  avatar      String?
+  isPrivate   Boolean  @default(false)
+  memberCount Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  members     CommunityMember[]
+
+  @@map("communities")
+}
+
+model CommunityMember {
+  id          String   @id @default(cuid())
+  userId      String
+  communityId String
+  role        String   @default("member") // "member", "admin", "moderator"
+  joinedAt    DateTime @default(now())
+
+  user        User      @relation(fields: [userId], references: [id])
+  community   Community @relation(fields: [communityId], references: [id])
+
+  @@unique([userId, communityId])
+  @@map("community_members")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  content   String
+  type      String   @default("text") // "text", "image", "file"
+  senderId  String
+  receiverId String?
+  tradeId   String?
+  createdAt DateTime @default(now())
+
+  sender    User     @relation("MessagesSent", fields: [senderId], references: [id])
+  receiver  User?    @relation("MessagesReceived", fields: [receiverId], references: [id])
+  trade     Trade?   @relation(fields: [tradeId], references: [id])
+
+  @@map("messages")
+}

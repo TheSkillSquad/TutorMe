@@ -1,0 +1,77 @@
+# ===========================================
+# TutorMe Application Environment Variables
+# ===========================================
+# This file contains sensitive API keys and configuration.
+# DO NOT commit this file to version control.
+# This file should only exist on your local machine and deployment server.
+
+# ===========================================
+# Firebase Configuration
+# ===========================================
+# Get these from your Firebase project settings
+NEXT_PUBLIC_FIREBASE_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXX
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=tutorme-3570e.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=tutorme-3570e
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=tutorme-3570e.firebasestorage.app
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=994356507928
+NEXT_PUBLIC_FIREBASE_APP_ID=1:994356507928:web:24f17ec54892dd0c179a6d
+
+# Firebase Admin SDK (Server-side only)
+FIREBASE_ADMIN_CLIENT_EMAIL=firebase-adminsdk-fbsvc@tutorme-3570e.iam.gserviceaccount.com
+FIREBASE_ADMIN_PRIVATE_KEY="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+FIREBASE_ADMIN_PROJECT_ID=tutorme-3570e
+
+# ===========================================
+# OpenRouter AI Configuration
+# ===========================================
+# Get your API key from https://openrouter.ai/keys
+OPENROUTER_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX2
+
+# ===========================================
+# PayPal Configuration
+# ===========================================
+# Get these from your PayPal Developer Dashboard
+PAYPAL_CLIENT_ID=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+PAYPAL_CLIENT_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+PAYPAL_ENVIRONMENT=sandbox  # Change to 'live' for production
+
+# PayPal Webhook Configuration (Optional)
+PAYPAL_WEBHOOK_ID=your_paypal_webhook_id_here
+PAYPAL_WEBHOOK_URL=your_paypal_webhook_url_here
+
+# ===========================================
+# Twilio Video Configuration
+# ===========================================
+# Get these from your Twilio Console
+TWILIO_ACCOUNT_SID=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+TWILIO_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+TWILIO_API_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+# Twilio Configuration (Optional)
+TWILIO_AUTH_TOKEN=your_twilio_auth_token_here
+
+# ===========================================
+# NextAuth.js Configuration
+# ===========================================
+# Generate a secure secret for NextAuth.js
+NEXTAUTH_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+NEXTAUTH_URL=https://tutor.theskillsquad.com  # Change to your production URL
+
+# ===========================================
+# Database Configuration (Prisma)
+# ===========================================
+# Database URL for Prisma ORM
+DATABASE_URL="file:./dev.db"  # SQLite for development
+# For production, use: "postgresql://user:password@host:port/database"
+
+# ===========================================
+# Application Configuration
+# ===========================================
+# Node Environment
+NODE_ENV=development
+
+# Application URL
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Debug mode (set to 'true' for development debugging)
+DEBUG=false

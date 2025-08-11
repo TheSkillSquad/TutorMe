@@ -1,0 +1,106 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_VERSION = "10"
+  NEXT_TELEMETRY_DISABLED = "1"
+  # Prisma configuration
+  PRISMA_CLI_QUERY_ENGINE_TYPE = "binary"
+  PRISMA_CLIENT_ENGINE_TYPE = "binary"
+
+# Redirect rules for SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Force HTTPS
+[[redirects]]
+  from = "http://*"
+  to = "https://:splat"
+  status = 301
+  force = true
+
+# API routes - handle serverless functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Socket.IO proxy configuration
+[[redirects]]
+  from = "/socket.io/*"
+  to = "https://your-websocket-service.com/:splat"
+  status = 200
+  force = true
+
+# Headers configuration
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=()"
+    Cache-Control = "public, max-age=31536000, immutable"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+[[headers]]
+  for = "/_next/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+
+# Development settings
+[dev]
+  command = "npm run dev"
+  port = 3000
+  publish = ".next"
+  autoLaunch = false
+
+# Plugin configurations
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[plugins]]
+  package = "netlify-plugin-cache-nextjs"
+
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+
+  [plugins.inputs]
+    output_path = "lighthouse-results.json"
+
+# Edge functions configuration
+[edge_functions]
+  path = "/api/*"
+  function = "api-handler"
+
+# Functions configuration
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+  [functions."api-handler"]
+    external_node_modules = ["firebase", "firebase-admin", "twilio", "@paypal/checkout-server-sdk"]
+
+# Environment variables for different contexts
+[context.production]
+  environment = { NODE_ENV = "production" }
+
+[context.deploy-preview]
+  environment = { NODE_ENV = "development" }
+
+[context.branch-deploy]
+  environment = { NODE_ENV = "development" }
