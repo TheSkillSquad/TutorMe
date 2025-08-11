@@ -1,43 +1,26 @@
+# Build configuration
 [build]
   command = "npm run build"
   publish = ".next"
-  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "20"
-  NPM_VERSION = "10"
   NEXT_TELEMETRY_DISABLED = "1"
-  # Prisma configuration
-  PRISMA_CLI_QUERY_ENGINE_TYPE = "binary"
-  PRISMA_CLIENT_ENGINE_TYPE = "binary"
 
-# Redirect rules for SPA routing
+# Force HTTPS redirect
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-# Force HTTPS
-[[redirects]]
-  from = "http://*"
-  to = "https://:splat"
+  from = "http://tutor.theskillsquad.com/*"
+  to = "https://tutor.theskillsquad.com/:splat"
   status = 301
   force = true
 
-# API routes - handle serverless functions
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-# Socket.IO proxy configuration
-[[redirects]]
-  from = "/socket.io/*"
-  to = "https://your-websocket-service.com/:splat"
-  status = 200
+  from = "http://www.tutor.theskillsquad.com/*"
+  to = "https://tutor.theskillsquad.com/:splat"
+  status = 301
   force = true
 
-# Headers configuration
+# Security Headers
 [[headers]]
   for = "/*"
   [headers.values]
@@ -45,22 +28,25 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=()"
-    Cache-Control = "public, max-age=31536000, immutable"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
 
+# Cache control for static assets
 [[headers]]
-  for = "/_next/*"
+  for = "/_next/static/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache control for API routes
 [[headers]]
   for = "/api/*"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization"
 
 # Development settings
 [dev]
@@ -69,33 +55,21 @@
   publish = ".next"
   autoLaunch = false
 
-# Plugin configurations
+# Essential Next.js plugin
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-[[plugins]]
-  package = "netlify-plugin-cache-nextjs"
-
+# Optional: Performance monitoring
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
-
   [plugins.inputs]
-    output_path = "lighthouse-results.json"
+    # Run lighthouse audit on deploy preview
+    audit_url = "https://tutor.theskillsquad.com"
+    output_path = "reports/lighthouse.html"
+    # Only run on production deploys
+    enable = true
 
-# Edge functions configuration
-[edge_functions]
-  path = "/api/*"
-  function = "api-handler"
-
-# Functions configuration
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
-
-  [functions."api-handler"]
-    external_node_modules = ["firebase", "firebase-admin", "twilio", "@paypal/checkout-server-sdk"]
-
-# Environment variables for different contexts
+# Environment context settings
 [context.production]
   environment = { NODE_ENV = "production" }
 
@@ -104,3 +78,8 @@
 
 [context.branch-deploy]
   environment = { NODE_ENV = "development" }
+
+# Optional: Functions configuration (if you have Netlify Functions)
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
