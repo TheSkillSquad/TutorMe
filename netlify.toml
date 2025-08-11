@@ -66,8 +66,6 @@
     # Run lighthouse audit on deploy preview
     audit_url = "https://tutor.theskillsquad.com"
     output_path = "reports/lighthouse.html"
-    # Only run on production deploys
-    enable = true
 
 # Environment context settings
 [context.production]
