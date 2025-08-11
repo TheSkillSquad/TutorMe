@@ -25,7 +25,7 @@ FIREBASE_ADMIN_PROJECT_ID=tutorme-3570e
 # OpenRouter AI Configuration
 # ===========================================
 # Get your API key from https://openrouter.ai/keys
-OPENROUTER_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX2
+OPENROUTER_API_KEY=
 
 # ===========================================
 # PayPal Configuration
