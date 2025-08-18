@@ -1,6 +1,6 @@
 # Build configuration
 [build]
-  command = "npm run build"
+  command = "npm install autoprefixer postcss && npm run build""
   publish = ".next"
 
 [build.environment]
