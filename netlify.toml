@@ -1,6 +1,5 @@
 # Build configuration
 [build]
-  [build]
   command = "rmdir /s /q node_modules && del package-lock.json && npm install && npm install autoprefixer postcss tailwindcss && npm run build"
   publish = ".next"
 
