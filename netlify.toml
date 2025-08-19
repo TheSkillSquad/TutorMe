@@ -1,7 +1,11 @@
 # Build configuration
 [build]
-  command = "rm -rf node_modules package-lock.json && npm ci && npm run build"
+  command = "rm -rf node_modules && npm ci && npm run build"
   publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_TELEMETRY_DISABLED = "1"
 
 [build.environment]
   NODE_VERSION = "20"
