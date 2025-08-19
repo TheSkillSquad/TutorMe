@@ -1,6 +1,6 @@
 # Build configuration
 [build]
-  command = "rm -rf node_modules package-lock.json && npm install && npm install autoprefixer postcss tailwindcss && npm run build"
+  command = "rm -rf node_modules package-lock.json && npm ci && npm run build"
   publish = ".next"
 
 [build.environment]
