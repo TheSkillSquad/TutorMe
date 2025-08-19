@@ -7,10 +7,6 @@
   NODE_VERSION = "22"
   NEXT_TELEMETRY_DISABLED = "1"
 
-[build.environment]
-  NODE_VERSION = "20"
-  NEXT_TELEMETRY_DISABLED = "1"
-
 # Force HTTPS redirect
 [[redirects]]
   from = "http://tutor.theskillsquad.com/*"
