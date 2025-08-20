@@ -25,18 +25,18 @@
     ],
     "paths": {
       "@/*": [
-        "./src/*"
+        "src/*"
       ]
     }
   },
   "include": [
-  "**/*.ts",
-  "**/*.tsx",
-  "next-env.d.ts",
-  "types",
-  "src/lib/types",
-  ".next/types/**/*.ts"
-],
+    "**/*.ts",
+    "**/*.tsx",
+    "next-env.d.ts",
+    "types",
+    "src/lib/types",
+    ".next/types/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ]
