@@ -1,6 +1,6 @@
 # Build configuration
 [build]
-  command = "rm -rf node_modules && npm ci && npm run build"
+  command = "npm run build"
   publish = ".next"
 
 [build.environment]
