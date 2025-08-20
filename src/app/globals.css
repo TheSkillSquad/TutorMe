@@ -1,9 +1,13 @@
-/* Import Tailwind v4 core */
-@import "tailwindcss";
-@import "tailwindcss/animate";
+/* Tailwind Directives - Always at the top! */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Custom dark variant */
-@custom-variant dark (&:is(.dark *));
+
+/* Custom dark variant - (keep only if you have a Tailwind plugin using this syntax) */
+/* If not needed for your tooling, you can remove or move this to your tailwind.config.js */
+/* @custom-variant dark (&:is(.dark *)); */
+
 
 /* Theme variables */
 @theme inline {
